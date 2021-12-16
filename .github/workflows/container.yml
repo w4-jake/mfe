@@ -21,6 +21,7 @@ jobs:
       - run: npm run build
 
       # Extra command needed
+      # See: https://www.udemy.com/course/microfrontend-course/learn/lecture/23207052#questions/13423414
       - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
         run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
 
