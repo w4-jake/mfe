@@ -6,10 +6,15 @@ const packageJson = require('../package.json')
 
 const devConfig = {
   mode: 'development',
+  output: {
+    publicPath: 'http://localhost:8081/'
+  },
   devServer: {
     port: 8081,
     historyApiFallback: {
-      index: 'index.html'
+      // NOTE: this needs a slash at the front or else accessing from http://localhost:8081/pricing
+      // will fail. Also, 'true' for historyApiFallback is also possible.
+      index: '/index.html'
     }
   },
   plugins: [
