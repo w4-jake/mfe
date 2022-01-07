@@ -17,6 +17,7 @@ module.exports = {
     ]
   },
   plugins: [
+    // We ALWAYS will populate index.html this way for container, so in common config file.
     new HtmlWebpackPlugin({
       template: './public/index.html'
     })

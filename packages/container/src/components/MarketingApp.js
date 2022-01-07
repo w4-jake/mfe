@@ -1,3 +1,4 @@
+// This is none other than the mount function exported in 'packages/marketing/src/bootstrap.js'
 import { mount } from 'marketing/MarketingApp';
 import React, { useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
