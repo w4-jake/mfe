@@ -52,9 +52,24 @@ const devConfig = {
         // a global variable with that same name. Try it with 'root'. And this overwrites the
         // value coming over from the remoteEntry.js file.
         //
-        // SO USE GOOD NAMES FOR YOUR MODULES THAT ARE UNLIKELY TO COLLIDE.
+        // SO USE GOOD NAMES FOR YOUR MODULES THAT ARE UNLIKELY TO COLLIDE. THE 'marketing' PREFIX
+        // HERE MEANS THAT A GLOBAL VARIABLE CALLED 'marketing' IS GOING TO TRY TO BE CREATED!
         marketing: 'marketing@http://localhost:8081/remoteEntry.js',
       },
+      // When we run container and marketing locally and then open up container and look at JS
+      // requests, we see that there are some 'vendors-' files coming in from localhost:8084
+      // (container) and then others from localhost:8081 (marketing). Butt the names of these files
+      // are kinda randomly generated and the name itself doesn't tell you everything about what is
+      // actually being imported.
+      //
+      // Without using the below option or similar, when you open each request's response and search
+      // for something like 'node_modules/react/index.js' or whatever, you will find some duplicate
+      // information. This duplicate info should go away once using shared. Compare MB of data, too.
+      //
+      // (Of course, in development these files are not minified so size will still be a bit hefty.)
+      //
+      // Remember, this is only the dependencies object, not devDependencies which we don't need. If
+      // you want to be very very specific about the versions of individual libraries, use array.
       shared: packageJson.dependencies
     }),
   ]

@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+// This is just copied from the marketing config.
+
 module.exports = {
   module: {
     rules: [

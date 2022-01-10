@@ -17,6 +17,8 @@ export default ({ history }) => {
         <Router history={history}>
           <Switch>
             <Route exact path="/pricing" component={Pricing} />
+            {/* If we use 'exact' here as well, then when going to /other or something, just */}
+            {/* blank page. As in, the _marketing-dev-root div gets replaced with empty div.  */}
             <Route path="/" component={Landing} />
           </Switch>
         </Router>

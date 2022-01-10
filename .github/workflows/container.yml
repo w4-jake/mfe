@@ -1,5 +1,8 @@
 name: deploy-container
 
+# Github creates a virtual machine for us and destroys it afterwards!
+
+# "Whenever code is pushed to the master branch AND there are changes to the container directory..."
 on:
   push:
     branches:
@@ -7,17 +10,22 @@ on:
     paths:
       - 'packages/container/**'
 
+# Set up the execution environment to happen inside the container directory
+# Like wheen you run 'npm install', where will that run?
 defaults:
   run:
     working-directory: packages/container
 
 jobs:
+  # The name of our job. Can do multiple and they run in parallel
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out the code from our repository.
       - uses: actions/checkout@v2
       - run: npm install
+      # Remember, we need the production domain at runtime! So we set the environment variable.
       - run: npm run build
         env:
           PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
@@ -27,9 +35,36 @@ jobs:
       - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
         run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
 
+      # Gives access to the AWS cli
       - uses: chrislennon/action-aws-cli@v1.1
+      # Sync our directory contents with this AWS S3 bucket.
+      # Remember, by default AWS S3 buckets are secure and not available to everyone.
+      # So we overwrote defaults so anybody's browser can get these files through Cloud Front.
+      #
+      # The 'secrets.SECRET_NAME' syntax are at the Github level.
+      # See: https://github.com/w4-jake/mfe/settings/secrets/actions.
+      #
+      # We also set up a Cloud Front (web) distribution that knows to look at our bucket.
+      # Once the distribution was deployed, we went back and changed its default root object to be
+      # '/container/latest/index.html'...
+      # The general tab for this distribution has the domain name that we can visit to see the site.
+      #
+      # What happens when we first push this and load the domain? We see in the console this error:
+      # Uncaught SyntaxError: Unexpected token '<' ... what is this?
+      #
+      # This happens a lot with mfe development. Got to Elements tab, and then see that we have the
+      # script tag injected with some main.0b4j4j2393jt4jg.js file or whatever as the source.
+      # So the browser simply takes the URL and tries to append it to that path.
+      #
+      # https://dmj3gs11yshy9.cloudfront.net/main.0b4j4j2393jt4jg.js
+      #
+      # This means seeing if there is that main.js file at the top level of the S3 bucket, but there
+      # is not! It is actually the 'container/latest' path at the top that is needed...
+      #
+      # So we need to set up the publicPath option for container config...take a look there.
       - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
         env:
+          # Necessary credentials for getting access to S3 (we created this user through IAM).
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 

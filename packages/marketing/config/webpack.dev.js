@@ -76,6 +76,10 @@ const devConfig = {
     new ModuleFederationPlugin({
       // Must be identical to prefix in container remote value: `${name}@http://...`.
       // If they do not match, you might get a ScriptExternalLoadError.
+
+      // SO USE GOOD NAMES FOR YOUR MODULES THAT ARE UNLIKELY TO COLLIDE. THE 'marketing' VALUE HERE
+      // MEANS THAT A GLOBAL VARIABLE CALLED 'marketing' IS GOING TO TRY TO BE CREATED IN CONTAINER
+      // WHEN THE REMOTE ENTRY SCRIPT GETS LOADED UP!
       name: 'marketing',
       // Always a good idea to just go by convention and keep this filename.
       filename: 'remoteEntry.js',
@@ -86,6 +90,8 @@ const devConfig = {
          // charts/barchart/index.js, we can just alias it to just './Barchart' for cleaner use.
         './MarketingApp': './src/bootstrap'
       },
+      // (Also see for container dev config comments...)
+      //
       // Ensures that when container fetches marketing remoteEntry.js file, it also looks at other
       // remoteEntry.js files that have the same 'shared' configuration, and then choose to load
       // only one copy from either, and then make available to both.

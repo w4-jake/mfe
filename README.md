@@ -35,3 +35,34 @@ REMEMBER, this is for THIS project. Other projects that use Microfrontends can h
 
 When the lecture was created, create-react-app didn't work with a version of Webpack that supported
 the Module Federation Plugin. This may have changed by now...
+
+## What are the requirements regarding how deployment should work?
+
+* Each app needs to be independently deployable.
+  * Teams might be working/updating at different paces so it's important to have that flexibility.
+* Location of child app remoteEntry.js files must be known at *build time*!
+  * Remember that when we run container, we are going to load up a main.js into the browser. This
+    file is created through the webpack build process -- it's not in the code editor. Then when app
+    decides it needs marketing app info, it needs to find the remoteEntry.js file. So main.js MUST
+    know exactly what URL to go to get the file, which means it has to be known at build time when
+    main.js is created.
+  * As an example, when running container and marketing in development and then open up main.js file
+    from the Chrome tools, notice that it's hard-coded to load what it was built to load:
+    * __webpack_require__.l("http://localhost:8081/remoteEntry.js", (event) => ... )
+  * So in the webpack production file, we need to think hard to make sure that the location of the
+    file is known at build time and exact.
+* The front-end deployment tool we use must be one that doesn't assume a single project is deployed.
+  * Must be able to handle multiple different projects.
+* Probably need a CI/CD pipeline of some sort.
+* At the time of the course, the remoteEntry.js file name is fixed for the Module Federation Plugin!
+  * So need to think about caching issues related to that...unless this requirement no longer holds.
+
+## How is this deployed?
+
+* One git monorepo that is pushed to Github.
+* Uses Github actions to build production versions of projects within monorepo that changed, and
+  then upload the files to Amazon S3. (main.js and index.html for Amazon S3, main.js, remoteEntry.js
+  and dependencies from other projects.)
+* Browser will ask for the files from Amazon CloudFront (CDN), which will provide first index.html
+  for container and then from the script tag there pull up container main.js, and begin that whole
+  process, like getting the remoteEntry.js file.
