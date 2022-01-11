@@ -33,6 +33,30 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
   },
+  // Example about the heroContent style.
+  //
+  // The useStyles function generates a classes object. When we take classes.heroContent, we see
+  // that is is just a string: in this case, "makeStyles-heroContent-2".  So when we assign
+  // className={ classes.heroContent } to the div, we are just assigning a string to the element.
+  //
+  // Meanwhile, MaterialUI has added CSS for ".makeStyles-heroContent-2 { padding. '...', ... } "
+  // already to the page. So, the browser will know exactly what styles to do. Lo and behold, when
+  // you inspect the element in the browser, you see that that very CSS has been added.
+  //
+  // By the way, the '2' being appended for the class name is somewhat randomly generated. We don't
+  // know exactly what the process is, but for dev production we can assume that there aren't really
+  // going to be collisions. But in production only, it is assumed that we are going ot want to
+  // extract this CSS selector into a different stylesheet, and to make it as small as possible, the
+  // class names are shortened to things like 'jss1', 'jss2'. And when you check this same
+  // heroContent element in production, it is 'jss2'.
+  //
+  // Without doing anything to prevent this, both container and marketing will produce classes
+  // called 'jss1', 'jss2', and so on, and these will be merged together and applied to all elements
+  // with that class, which is a disaster. Ex. if 'jss2' from marketing is padding 30px, then this
+  // padding also gets applied to 'jss2' elements from container project which is unintended. This
+  // is actually why the height of the header looked too large.
+  //
+  // So we prevent this with the 'generateClassName' option. See App.js for marketing.
   heroContent: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(8, 0, 6),
@@ -65,6 +89,10 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function Album() {
   const classes = useStyles();
+  console.log('useStyles')
+  console.log(useStyles)
+  console.log('classes')
+  console.log(classes)
 
   return (
     <React.Fragment>

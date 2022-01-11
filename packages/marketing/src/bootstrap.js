@@ -1,15 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+// react-router-dom internally makes use of this history library! So totally compatible.
 import { createMemoryHistory, createBrowserHistory } from 'history'
 import App from './App'
 
 // Mount function to start up the app. Name is totally arbitrary.
 const mount = (el, { defaultHistory, initialPath, onNavigate }) => {
+  // When we run in isolation and use memory history, it's not the end of the world, but it's a bit
+  // of a pain! Since the address bar doesn't update when we click around. So, set it up so that in
+  // isolation, we get a browser history!
+  // Of course, this assumes that container is NOT giving a defaultHistory...
   const history = defaultHistory || createMemoryHistory({
     initialEntries: [initialPath]
 });
 
+  // When running in isolation, there is no onNavigate being passed down! Look below...we call
+  // mount without it! So we put this check in. No need to use the listener unless with container.
   if (onNavigate) {
+    // Some built-in functionally. It's a listener that calls this function when history changes!
     history.listen(onNavigate);
   }
 
@@ -17,8 +25,11 @@ const mount = (el, { defaultHistory, initialPath, onNavigate }) => {
   // without any framework, or if we are developing with Vue or some other library.
   ReactDOM.render(<App history={history} />, el);
 
+  // We need to return an object here so that the caller of mount in container gets some means to
+  // tell marketing when the container path has changed!
   return {
     onParentNavigate({ pathname: nextPathname }) {
+      // Notice this is the exact same logic used in container/MarketingApp's onNavigate function!
       const { pathname } = history.location;
 
       if (pathname !== nextPathname) {

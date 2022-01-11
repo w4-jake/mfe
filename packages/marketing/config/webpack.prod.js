@@ -9,6 +9,10 @@ const prodConfig = {
   mode: 'production',
   output: {
     filename: '[name].[contenthash].js',
+    // Just like for container, we need this prefix appended to created files. Here it is because
+    // the remoteEntry.js file will have a bunch of URLs for where dependency and source code files
+    // related to marketing are, and of course on S3 they will all have a path starting with this
+    // prefix so make sure when remoteEntry.js is created that it prepends for all URLs.
     publicPath: '/marketing/latest/'
   },
   plugins: [

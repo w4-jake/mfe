@@ -37,6 +37,7 @@ const prodConfig = {
       remotes: {
         auth: `auth@${domain}/auth/latest/remoteEntry.js`,
         dashboard: `dashboard@${domain}/dashboard/latest/remoteEntry.js`,
+        // This bucket path is set with the 's3 sync' command in the workflows files.
         marketing: `marketing@${domain}/marketing/latest/remoteEntry.js`,
       },
       shared: packageJson.dependencies

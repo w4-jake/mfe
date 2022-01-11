@@ -28,9 +28,57 @@ export default () => {
   }, [isSignedIn]);
 
   return (
-    // Originally had used BrowserRouter here to create browser history, but now we just use a
-    // router and pass it a new browser history from above. This essentially is the same thing, but
-    // now we have access to the history object.
+    // Some notes about routing...
+    //
+    // A routing library in general maintains two things:
+    //   - History to determine what path the user is currently on, and also change the path!
+    //   - Router to figure out what content to show based on path.
+    //
+    // And there are generally three types of history:
+    //   - Browser history (most popular): just look at the address bar, what's after domain.
+    //   - Hash history: uses the '#' character...look it up if curious.
+    //   - Memory/Abstract history: stores the information inside an object in code. So, it does not
+    //     look at the address bar.
+    //
+    // Whenever you create a React-Router instance, you need to tell it what kind of history to use.
+    // A very common way for mfe development is browser history in container, then memory history in
+    // child apps. Keeping only one browser history object makes sense to prevent multiple apps from
+    // trying to change the address bar path at the same time (race condition). Just container will
+    // look at and touch the address bar.
+    //
+    // Originally had used BrowserRouter here. Behind the scenes, it also creates a browser history
+    // object.
+    //
+    // Some issues where there is no routing communication between container and marketing...
+    // Say we run container and marketing locally and then go to localhost:8084/. What happens?
+    //   1. First, a browser history for container and then a memory history for marketing is made.
+    //      Initial path is '/' for container because of address bar, and '/' for marketing because
+    //      memory history by default starts with '/'.
+    //   2. Then, click on link to '/pricing'. This changes marketing's memory history, and we see
+    //      the right content on screen where the MarketingApp is rendered. But unless we do some
+    //      other thing, it doesn't update container browser history, so address bar stays at '/'!
+    // Say we run container and marketing locally and then go to localhost:8084/pricing.
+    //   1. First, a browser history for container and then a memory history for marketing is made.
+    //      Initial path is '/pricing' for container because of address bar, and '/' for marketing
+    //      because memory history by default starts with '/'. So the non-pricing default page for
+    //      marketing is rendered in the MarketingApp!
+    //   2. Then, click on link to '/pricing'. This changes marketing's memory history, and we see
+    //      the right content on screen where the MarketingApp is rendered, and address bar matches.
+    //      But of course if we navigate away to '/' through 'App' button in container, it doesn't
+    //      affect marketing's memory history, so the pricing page still shows...
+    //
+    // REMEMBER, when you click links, they will affect the closest parent router's history only. So
+    // in container if there is an <a href="/" /> and you click it, it will change browser history.
+    // Whereas if that link were rendered by marketing, it would affect marketing's memory history.
+    //
+    // So need two ways to communicate (as generically as possible! Don't just share react history):
+    //   - When click link in container, send a change down to marketing so marketing will update
+    //     memory history. (This means we need receive a handler of some kind...see MarketingApp.js)
+    //   - When click link in marketing, send a change up to container so container will update
+    //     browser history. (So pass 'onNavigate' callback down! See mount in MarketingApp.js.)
+    //
+    // Now, we just use a router and pass it a new browser history from above. This essentially is
+    // the same thing, but now we have access to the history object.
     <Router history={history}>
       <StylesProvider generateClassName={generateClassName}>
         <div>

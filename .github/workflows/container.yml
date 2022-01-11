@@ -28,6 +28,9 @@ jobs:
       # Remember, we need the production domain at runtime! So we set the environment variable.
       - run: npm run build
         env:
+          # This value is just the domain we got from the CloudFront distribution.
+          # Obviously this is 'dmj3gs11yshy9.cloudfront.net'.
+          # For the tutorial ok to expose this value in plaintext.
           PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
 
       # Extra command needed
@@ -39,12 +42,12 @@ jobs:
       - uses: chrislennon/action-aws-cli@v1.1
       # Sync our directory contents with this AWS S3 bucket.
       # Remember, by default AWS S3 buckets are secure and not available to everyone.
-      # So we overwrote defaults so anybody's browser can get these files through Cloud Front.
+      # So we overwrote defaults so anybody's browser can get these files through CloudFront.
       #
       # The 'secrets.SECRET_NAME' syntax are at the Github level.
       # See: https://github.com/w4-jake/mfe/settings/secrets/actions.
       #
-      # We also set up a Cloud Front (web) distribution that knows to look at our bucket.
+      # We also set up a CloudFront (web) distribution that knows to look at our bucket.
       # Once the distribution was deployed, we went back and changed its default root object to be
       # '/container/latest/index.html'...
       # The general tab for this distribution has the domain name that we can visit to see the site.
@@ -68,7 +71,31 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      # Say that we have fixed the issue above by correctly changing the publicPath for the main.js
+      # file, but after deploying again it is still not working properly and we see the same error.
+      #
+      # Looking at the Elements tab, we see that it is still looking for the same top-level main.js
+      # file, which does not exist! When you go to the bucket, and then visit container/latest and
+      # look at the index.html file, you can see that it is correctly asking for the new path to the
+      # main.js file.
+      #
+      # But this isn't being updated on CloudFront, because when you create a new distribution, it
+      # picks up any new files that have been added, but when you simply update files it uses the
+      # old version in the file still. So we create an invalidation on the Invalidations tab for the
+      # distribution to make sure that we always use the same index.html file's location's newest
+      # version. It works that way manually, so now below we make it happen automatically.
+      #
+      # Remember, we DO want the index.html file to have the newest version used every time, because
+      # the injected script tag will always be a different hash of a main.js file.
+      #
+      # See that we do it only for the path to the index.html file, because all the other generated
+      # files have hashes that mean they are new files and are picked up anyway by CloudFront.
+      #
+      # Then notice after you run this build again that on AWS CloudFront, a new invalidation has
+      # been created like the one you made manually.
       - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/container/latest/index.html"
         env:
+          # We could bring these envs to a higher level so can be not duplicated, but no good reason
+          # to expose these secret values to other steps in the build.
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

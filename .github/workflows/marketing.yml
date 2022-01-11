@@ -31,7 +31,26 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      # Here, very similar to container build, but this time it's the remoteEntry.js file that needs
+      # to have automatic invalidation, since this file name must be FIXED due to Module Federation
+      # Plugin requirements at the time of this tutorial being made.
       - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/marketing/latest/remoteEntry.js"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+# Things to verify once the container and marketing deployments are working:
+#   - Looking in Elements tab, script source is correctly looking at /container/latest/main.e6e3….js
+#     - Remember, this is what kicks off the entire loading of everything for the site.
+#   - Looking at Network tab, remoteEntry.js JS request for marketing is from correct path.
+#     - Namely, https://dmj3gs11yshy9.cloudfront.net/marketing/latest/remoteEntry.js.
+#     - Looking at this file from Preview, see a value called h.p set to "/marketing/latest" prefix.
+#     - So, no need to worry about collisions between different bootstrap.js files or whatever among
+#       different projects.
+#   - A lot of other JS requests if you hover over them are also coming from /marketing/latest/ at
+#     the domain. These files all have new hashes each time, though.
+#     - Is it bad that we have a lot of small files instead of one bigger file with it all?
+#     - A reason for this is the shared modules that we are using...makes a lot of non-overlapping
+#       files.
+#     - In this day and age, not really an issue, and can be more advantageous with HTTP2 since each
+#       loads up a little faster.

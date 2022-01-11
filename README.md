@@ -59,10 +59,29 @@ the Module Federation Plugin. This may have changed by now...
 
 ## How is this deployed?
 
-* One git monorepo that is pushed to Github.
+* One git monorepo that is pushed to Github to master branch.
+  * (This also allows us to to push to other branches and introduce a review process before PR.)
 * Uses Github actions to build production versions of projects within monorepo that changed, and
   then upload the files to Amazon S3. (main.js and index.html for Amazon S3, main.js, remoteEntry.js
   and dependencies from other projects.)
 * Browser will ask for the files from Amazon CloudFront (CDN), which will provide first index.html
   for container and then from the script tag there pull up container main.js, and begin that whole
   process, like getting the remoteEntry.js file.
+
+## What are the requirements for how routing should work for this container?
+
+* Both container and child apps need to be able to support routing features.
+  * Container routing governs navigation to different child apps.
+  * Child app routing governs navigation within the child app once we've entered from container.
+  * Not all child apps need routing. (Ex. dashboard)
+  * In this project, container, marketing, and auth all have React-Router.
+    *  But! They don't assume others also have React-Router as their routing library.
+* Child apps might need to add in new pages/routes all the time.
+  * ...and this shouldn't mean that a container redeploy is necessary.
+* Might need to show two or more microfrontends on the screen at the same time.
+  * Like a sidebar that's always on, and then a content section.
+* Should be able to use off-the-shelf routing solutions like React-Router.
+  * Some amount of custom coding is OK...but shouldn't have to reinvent the wheel.
+* Routing should be supported in both isolation and together.
+* If different apps need to communicate info, should be done as generically as possible.
+  * Might swap up nav libraries all the time so shouldn't require a rewrite of app.
