@@ -36,6 +36,7 @@ export default () => {
 
   useEffect(() => {
     // Bad to use else to push to the root route, since this useEffect runs when first go to site.
+    // If user first goes to '/pricing' or something, we don't want them redirected then to '/'.
     if (isSignedIn) {
       history.push('/dashboard');
     }
@@ -91,8 +92,10 @@ export default () => {
     //   - When click link in marketing, send a change up to container so container will update
     //     browser history. (So pass 'onNavigate' callback down! See mount in MarketingApp.js.)
     //
-    // Now, we just use a router and pass it a new browser history from above. This essentially is
-    // the same thing, but now we have access to the history object.
+    // Now, we just use a Router and pass it a new browser history from above. This essentially is
+    // the same thing, but now we have access to the history object in order to write the useEffect.
+    // (Remember, in child components we can import useHistory, but in this top-level component
+    // that apparently does not work.)
     <Router history={history}>
       <StylesProvider generateClassName={generateClassName}>
         <div>
@@ -101,7 +104,8 @@ export default () => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route path="/auth">
-                {/* // NOTE: For demo just passes callback down, but can also use Redux etc. */}
+                {/* // NOTE: For demo just passes callback down, but can also use Redux etc. to keep
+                track of a lot more states and setters at the container level. */}
                 <AuthLazy onSignIn={() => setIsSignedIn(true)} />
               </Route>
               <Route path="/dashboard" >

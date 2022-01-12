@@ -13,6 +13,7 @@ and how this project is the second type.
 ## What are the requirements that drove the architecture choices for this project?
 
 REMEMBER, this is for THIS project. Other projects that use Microfrontends can have different needs.
+**Your requirements drive your architecture.**
 
 ### Inflexible
 
@@ -91,3 +92,23 @@ the Module Federation Plugin. This may have changed by now...
 * Routing should be supported in both isolation and together.
 * If different apps need to communicate info, should be done as generically as possible.
   * Might swap up nav libraries all the time so shouldn't require a rewrite of app.
+
+## How does authentication work here?
+
+* The dashboard page should be guarded. Only when the user has logged in can this page be accessed.
+* The auth app itself is not for enforcing permissions, allowing access to certain routes.
+  * Why? With lazy loading, auth app might not actually be loaded when user tries to access a route
+    to dashboard, like app.com/dashboard. In this app, only container and dashboard resources are
+    requested by the browser if go directly to that page!
+* It's possible to have each app being aware of whether the user is authorized...but cleaner to
+  centralize this information (as an "isSignedIn" value) in the container.
+
+## Big takeaways?
+
+* Your requirements drive your architecture. See above.
+* Always ask..."If I have to change this thing in the future, will I hve to change another app?"
+* Everyone will eventually forget React/Vue/some specific tool, so try to use as generic shepherds
+  of information as possible.
+* Scope your CSS with a css-in-js library or some other means. See marketing/src/App.js
+* Be prepared for issues in production that you don't see in development...study this repo, and do
+  careful QA in your own microfrontend projects!

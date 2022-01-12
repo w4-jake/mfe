@@ -28,6 +28,8 @@ export default ({ onSignIn }) => {
           history.push(nextPathname)
         }
       },
+      // It is only for AuthApp that we need to send this callback down, so only in the auth
+      // bootstrap.js do we need to have this as an option for mount!
       onSignIn
     });
 

@@ -34,6 +34,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
+            // For React projects, there were also React-related presets. Not needed here!
             presets: ['@babel/preset-env'],
             plugins: ['@babel/plugin-transform-runtime']
           }

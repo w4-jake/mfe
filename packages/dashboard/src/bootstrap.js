@@ -1,4 +1,4 @@
-// This microapp does not need any routing or history! Since it's just a page.
+// This child app does not need any routing or history! Since it's just a page.
 import { createApp } from 'vue';
 import Dashboard from './components/Dashboard.vue'
 
@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard.vue'
 const mount = (el) => {
   // Next two lines are specific to Vue...this is how you start things.
   const app = createApp(Dashboard);
-  app.mount(el);
+  app.mount(el); // Not our mount function...a Vue method of app.
 };
 
 // If we are in development and in isolation,
