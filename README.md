@@ -1,6 +1,12 @@
 # Microfrontends with React: A Complete Developer's Guide
 
-Generalized comments on webpack and so on are mostly in the marketing and container directory.
+Generalized comments on webpack, styling, routing, and so on are mostly in the marketing and
+container directory.
+
+Auth has some discussion about publicPath for dev development at webpack.dev.js, and about initial
+history at container's AuthApp.js. These discussions came up at this point in the lecture because
+the auth route prefix of '/auth' doesn't start at the root '/'.
+
 Also see the container README.md for an overview of build-time integration vs. run-time integration
 and how this project is the second type.
 

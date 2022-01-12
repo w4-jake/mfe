@@ -22,6 +22,7 @@ const packageJson = require('../package.json')
 
 const devConfig = {
   mode: 'development',
+  // See discussion for this at auth's webpack.dev.js.
   output: {
     publicPath: 'http://localhost:8081/'
   },

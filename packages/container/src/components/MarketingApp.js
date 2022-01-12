@@ -21,6 +21,7 @@ export default () => {
   // Make sure that we do this just once, when the component first loads.
   useEffect(() => {
     const { onParentNavigate } = mount(ref.current, {
+      // See why needed at AuthApp.js.
       initialPath: history.location.pathname,
       // The history.listen function gives us a location object as a parameter to work with!
       onNavigate: ({ pathname: nextPathname }) => {

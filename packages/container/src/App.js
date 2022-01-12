@@ -6,6 +6,20 @@ import { createBrowserHistory } from 'history';
 import Header from './components/Header';
 import Progress from './components/Progress';
 
+// When we first visit localhost:8080/, do we really need the resources for auth?
+// Or for dashboard? No! Only when we go to signin or signup page should auth
+// resources be brought in.
+//
+// If we just straight out imported these app files, without doing lazy, we'd
+// immediately import the mount function, and that involves of course looking
+// into 'auth/AuthApp' which means finding that remoteEntry.js file and loading
+// up all the other resources! Even when just going to localhost:8080/
+//
+// So, lazily load the code only when React realizes that these files are
+// necessary. After using this, see that nothing from localhost:8082 is actually
+// requested by the browser until go to the Login page!
+//
+// Try running with throttling set to 'Slow 3G', to see loading in real time.
 const MarketingLazy = lazy(() => import('./components/MarketingApp'));
 const AuthLazy = lazy(() => import('./components/AuthApp'));
 const DashboardLazy = lazy(() => import('./components/DashboardApp'));
@@ -83,6 +97,7 @@ export default () => {
       <StylesProvider generateClassName={generateClassName}>
         <div>
           <Header isSignedIn={isSignedIn} onSignOut={() => setIsSignedIn(false)} />
+          {/* Anything inside here that is lazy will have this fallback shown while not ready. */}
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route path="/auth">

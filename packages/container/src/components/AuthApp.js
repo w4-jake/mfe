@@ -9,6 +9,17 @@ export default ({ onSignIn }) => {
 
   useEffect(() => {
     const { onParentNavigate } = mount(ref.current, {
+      // In the bootstrap, if we call createMemoryHistory without arguments, it
+      // begins the history at '/'. This was okay for marketing, but auth's
+      // paths all start with '/auth', so it leads to a bug.
+      //
+      // When first navigate to signin page, there is no memory history initial
+      // state saying we are there, and since there is nothing at '/' for auth
+      // it just renders a blank page. Only after we click a second time does
+      // it trigger a browser history change in container that gets reflected
+      // in onParentNavigate being called.
+      //
+      // So we need to give it the current path according to browser history.
       initialPath: history.location.pathname,
       onNavigate: ({ pathname: nextPathname }) => {
         const { pathname } = history.location
