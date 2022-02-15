@@ -54,7 +54,7 @@ const devConfig = {
         //
         // SO USE GOOD NAMES FOR YOUR MODULES THAT ARE UNLIKELY TO COLLIDE. THE 'marketing' PREFIX
         // HERE MEANS THAT A GLOBAL VARIABLE CALLED 'marketing' IS GOING TO TRY TO BE CREATED!
-        marketing: 'marketing@http://localhost:8081/remoteEntry.js',
+        // marketing: 'marketing@http://localhost:8081/remoteEntry.js',
       },
       // When we run container and marketing locally and then open up container and look at JS
       // requests, we see that there are some 'vendors-' files coming in from localhost:8084

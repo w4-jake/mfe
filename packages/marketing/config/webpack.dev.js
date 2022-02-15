@@ -1,5 +1,6 @@
 const { merge } = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin')
 const commonConfig = require('./webpack.common')
 const packageJson = require('../package.json')
@@ -60,6 +61,9 @@ const devConfig = {
     }
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'public/env-config.json', to: 'env-config.json' }],
+    }),
     // We need to use this to expose resources that can be used by the container app.
     // Run 'npm run start' locally for both marketing and container, and then look at JS requests
     // for the Network tab in container.
