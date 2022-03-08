@@ -22,7 +22,6 @@ const useDynamicScript = (url) => {
   useEffect(() => {
     if (!url) return;
 
-    console.log(urlCache)
     if (urlCache.has(url)) {
       setReady(true);
       setErrorLoading(false);
