@@ -10,6 +10,16 @@ the auth route prefix of '/auth' doesn't start at the root '/'.
 Also see the container README.md for an overview of build-time integration vs. run-time integration
 and how this project is the second type.
 
+## How do you run this?
+
+### Local
+- `npm install` and `npm start` in each of the four package directories.
+- Then visit `localhost:8084`.
+
+### Production:
+
+It's already running (maybe) at `https://dmj3gs11yshy9.cloudfront.net/`.
+
 ## What are the requirements that drove the architecture choices for this project?
 
 REMEMBER, this is for THIS project. Other projects that use Microfrontends can have different needs.

@@ -19,9 +19,11 @@ const devConfig = {
     new ModuleFederationPlugin({
       // Since container is the host, this name isn't used. Convention to add anyways.
       name: 'container',
-      remotes: {
-        auth: 'auth@http://localhost:8082/remoteEntry.js',
-        dashboard: 'dashboard@http://localhost:8083/remoteEntry.js',
+
+      // NOTE: Disabling static remotes for experiment with dynamic remotes.
+      // remotes: {
+      //   auth: 'auth@http://localhost:8082/remoteEntry.js',
+      //   dashboard: 'dashboard@http://localhost:8083/remoteEntry.js',
         // In MarketingApp, we have: "import { mount } from 'marketing/MarketingApp';"
         // This 'marketing' module that we import from is the KEY here.
         // First webpack looks in node_modules to see if there is a 'marketing'.
@@ -54,8 +56,8 @@ const devConfig = {
         //
         // SO USE GOOD NAMES FOR YOUR MODULES THAT ARE UNLIKELY TO COLLIDE. THE 'marketing' PREFIX
         // HERE MEANS THAT A GLOBAL VARIABLE CALLED 'marketing' IS GOING TO TRY TO BE CREATED!
-        marketing: 'marketing@http://localhost:8081/remoteEntry.js',
-      },
+        // marketing: 'marketing@http://localhost:8081/remoteEntry.js',
+      // },
       // When we run container and marketing locally and then open up container and look at JS
       // requests, we see that there are some 'vendors-' files coming in from localhost:8084
       // (container) and then others from localhost:8081 (marketing). Butt the names of these files
@@ -70,6 +72,7 @@ const devConfig = {
       //
       // Remember, this is only the dependencies object, not devDependencies which we don't need. If
       // you want to be very very specific about the versions of individual libraries, use array.
+
       shared: packageJson.dependencies
     }),
   ]

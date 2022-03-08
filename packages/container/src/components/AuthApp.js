@@ -1,14 +1,29 @@
-import { mount } from 'auth/AuthApp';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { useRemoteModule } from '../hooks/useRemoteModule';
 import { useHistory } from 'react-router-dom';
 
 // Note that this technique can be used for a wide variety of technologies.
 export default ({ onSignIn }) => {
+  const [{ module, scope, url }, setSystem] = useState({});
+  const { RemoteModule: AuthAppModule, errorLoading } = useRemoteModule(url, scope, module);
   const ref = useRef(null);
   const history = useHistory();
 
   useEffect(() => {
-    const { onParentNavigate } = mount(ref.current, {
+    setSystem({
+      // NOTE: This is just for proof of concept. In a real build this domain can be provided by
+      //       environment variable, configuration received from a server, whatever.
+      url: process.env.NODE_ENV === 'development'
+        ? 'http://localhost:8082/remoteEntry.js'
+        : 'dmj3gs11yshy9.cloudfront.net/auth/latest/remoteEntry.js',
+      scope: 'auth',
+      module: './AuthApp',
+    });
+
+    if (errorLoading || !AuthAppModule) {
+      return
+    }
+    const { onParentNavigate } = AuthAppModule.mount(ref.current, {
       // In the bootstrap, if we call createMemoryHistory without arguments, it
       // begins the history at '/'. This was okay for marketing, but auth's
       // paths all start with '/auth', so it leads to a bug.
@@ -34,7 +49,7 @@ export default ({ onSignIn }) => {
     });
 
     history.listen(onParentNavigate);
-  }, []);
+  }, [AuthAppModule]);
 
   return <div ref={ref} />;
 };

@@ -31,15 +31,18 @@ const prodConfig = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'container',
+
+      // NOTE: Disabling static remotes for experiment with dynamic remotes.
       // Remember, these remotes' locations need to be fixed at build time!
       // Obviously there are multiple remoteEntry.js files, so we set this up to require that the
       // below paths are actually where the files are being served from.
-      remotes: {
-        auth: `auth@${domain}/auth/latest/remoteEntry.js`,
-        dashboard: `dashboard@${domain}/dashboard/latest/remoteEntry.js`,
-        // This bucket path is set with the 's3 sync' command in the workflows files.
-        marketing: `marketing@${domain}/marketing/latest/remoteEntry.js`,
-      },
+      // remotes: {
+      //   auth: `auth@${domain}/auth/latest/remoteEntry.js`,
+      //   dashboard: `dashboard@${domain}/dashboard/latest/remoteEntry.js`,
+      //   // This bucket path is set with the 's3 sync' command in the workflows files.
+      //   marketing: `marketing@${domain}/marketing/latest/remoteEntry.js`,
+      // },
+
       shared: packageJson.dependencies
     })
   ]

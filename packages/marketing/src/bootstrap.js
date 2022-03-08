@@ -12,7 +12,7 @@ const mount = (el, { defaultHistory, initialPath, onNavigate }) => {
   // Of course, this assumes that container is NOT giving a defaultHistory...
   const history = defaultHistory || createMemoryHistory({
     initialEntries: [initialPath]
-});
+  });
 
   // When running in isolation, there is no onNavigate being passed down! Look below...we call
   // mount without it! So we put this check in. No need to use the listener unless with container.
