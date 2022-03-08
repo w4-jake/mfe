@@ -27,7 +27,7 @@ export default () => {
       //       environment variable, configuration received from a server, whatever.
       url: process.env.NODE_ENV === 'development'
         ? 'http://localhost:8081/remoteEntry.js'
-        : 'dmj3gs11yshy9.cloudfront.net/marketing/latest/remoteEntry.js',
+        : 'https://dmj3gs11yshy9.cloudfront.net/marketing/latest/remoteEntry.js',
       scope: 'marketing',
       module: './MarketingApp',
     });

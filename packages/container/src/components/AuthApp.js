@@ -15,7 +15,7 @@ export default ({ onSignIn }) => {
       //       environment variable, configuration received from a server, whatever.
       url: process.env.NODE_ENV === 'development'
         ? 'http://localhost:8082/remoteEntry.js'
-        : 'dmj3gs11yshy9.cloudfront.net/auth/latest/remoteEntry.js',
+        : 'https://dmj3gs11yshy9.cloudfront.net/auth/latest/remoteEntry.js',
       scope: 'auth',
       module: './AuthApp',
     });
